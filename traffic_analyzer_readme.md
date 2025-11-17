@@ -136,9 +136,9 @@ sudo python3 network_analyzer.py
 
 Add a screenshot of your tool:
 
-```
-![Traffic Analyzer Output](/screenshot/.png)
-```
+![Traffic Analyzer Output](screenshot/image1.png)
+![Traffic Analyzer Output](screenshot/image2.png)
+
 
 ---
 
