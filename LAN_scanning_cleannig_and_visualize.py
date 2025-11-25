@@ -3,13 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import re
 
-# =====================================================
-# 1. CAPTURE LIVE NETWORK TRAFFIC
-# =====================================================
 
 print("\n[+] Capturing network traffic for 15 seconds...")
 
-packets = sniff(timeout=15)   # Capture 15 seconds (change if needed)
+packets = sniff(timeout=15)   
 
 data = []
 
@@ -28,21 +25,14 @@ print("[+] Traffic captured. Saved as raw_traffic.csv")
 print(raw_df.head())
 
 
-# =====================================================
-# 2. CLEAN THE TRAFFIC LOG (PANDAS)
-# =====================================================
-
 print("\n[+] Cleaning captured traffic...")
 
 df = raw_df.copy()
 
-# Remove duplicates
 df = df.drop_duplicates()
 
-# Remove missing IPs
 df = df.dropna(subset=['src_ip', 'dst_ip'])
 
-# Validate IP
 def valid_ip(ip):
     pattern = r'\b\d{1,3}(\.\d{1,3}){3}\b'
     if not re.match(pattern, ip):
@@ -52,7 +42,6 @@ def valid_ip(ip):
 df = df[df['src_ip'].apply(valid_ip)]
 df = df[df['dst_ip'].apply(valid_ip)]
 
-# Convert proto numbers to names (simple)
 protocol_map = {6: "TCP", 17: "UDP", 1: "ICMP"}
 df['proto'] = df['proto'].map(protocol_map).fillna("OTHER")
 
@@ -62,14 +51,9 @@ print("[+] Cleaned traffic saved as cleaned_traffic.csv")
 print(df.head())
 
 
-# =====================================================
-# 3. VISUALIZATION (MATPLOTLIB)
-# =====================================================
-
 print("\n[+] Visualizing traffic...")
 
 def visualizing_traffic():
-        # ---------- Top Source IPs ----------
     src_count = df['src_ip'].value_counts()
 
     plt.figure(figsize=(10,4))
@@ -78,14 +62,12 @@ def visualizing_traffic():
     plt.xlabel("Source IP")
     plt.ylabel("Packet Count")
 
-    # Add labels
     for i, v in enumerate(src_count):
         plt.text(i, v + 0.05, str(v), ha="center")
 
     plt.tight_layout()
     plt.show()
 
-    # ---------- Protocol Usage ----------
     proto_count = df['proto'].value_counts()
 
     plt.figure(figsize=(6,4))
